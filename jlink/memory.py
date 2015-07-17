@@ -72,10 +72,14 @@ class Memory:
                 for i in range(length):
                     segmentdata.append( chr(int(l[9+2*i:11+2*i],16)) )
                 currentAddr = length + currentAddr
+            elif type == 0x02:
+                data=int(l[9:9+4],16)
+                extSegAddr = 16 * data
+                #print "2: Assign extSegAddr %x"%data
             elif type == 0x04:
                 data=int(l[9:9+4],16)
                 extSegAddr = 65536 * data
-                #print "4: Assign extSegAddr %x"%data
+                #print "4: Assign extLinAddr %x"%data
                 pass
             elif type == 0x05:
                 data=int(l[9:9+4*2],16)
@@ -84,8 +88,10 @@ class Memory:
                 pass
             elif type == 0x01: # EOF
                 pass
-            elif type in (0x02, 0x03):
-                raise Exception(l+" type: %x"%type)
+            elif type in (0x03,):
+                message = l+" type: %x"%type
+                print message
+                #raise Exception(message)
                 pass
             else:
                 sys.stderr.write("Ignored unknown field (type 0x%02x) in ihex file.\n" % type)
