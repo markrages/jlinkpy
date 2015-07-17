@@ -74,3 +74,28 @@ Usage
 -----
 Consult the nrfjprog.exe documentation. If this nrfjprog behavior
 diverges from the official one, please file a bug.
+
+Using Nordic SDK Makefiles
+--------------------------
+
+Here's a hint for using the Nordic Makefiles.  They have a weirdly
+specific GCC installation path.  Furthermore, this path is hardcoded
+in the SDK Makefile.common and cannot be overridden by application
+Makefiles.
+
+Rather than horsing around with compiling GCC from scratch, or using
+~~lockin~~ toolchain vendors, it is easier and better to use a
+distribution-supported GCC, or the ARM-unofficially-supported PPA (for
+Ubuntu achievers):
+
+    sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded
+    sudo apt-get update
+    sudo apt-get install gcc-arm-none-eabi
+
+A simple symlink will make things work fine with GCC in the normal
+location:
+
+     sudo ln -rs /usr /usr/local/gcc-arm-none-eabi-4_8-2014q1
+
+Now the Makefiles in the SDK will work unchanged, including the "make
+flash" target.
