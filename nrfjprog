@@ -47,6 +47,6 @@ if __name__=="__main__":
             jl().make_dump(startaddr,endaddr,filename)
 
         else:
-            print "unkown argument: ",arg
+            print "unknown argument: ",arg
             sys.exit(-1)
 
