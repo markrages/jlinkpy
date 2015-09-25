@@ -134,6 +134,12 @@ class JLink(object):
     @check_err
     def halt(self): return self.jl.JLINKARM_Halt()
     @check_err
+    def clear_tck(self): return self.jl.JLINKARM_ClrTCK()
+    @check_err
+    def clear_tms(self): return self.jl.JLINKARM_ClrTMS()
+    @check_err
+    def set_tms(self): return self.jl.JLINKARM_SetTMS()
+    @check_err
     def read_reg(self,r): return self.jl.JLINKARM_ReadReg(r)
     @check_err
     def write_reg(self,r,val): return self.jl.JLINKARM_WriteReg(r,val)
@@ -162,6 +168,17 @@ class JLink(object):
         return buf,ret
 
     # end of DLL functions
+
+    def pinreset(self): 
+        """executes sequence from 
+        https://devzone.nordicsemi.com/question/18449
+        """
+        self.write_U32(0x40000544, 1)
+        self.tif_select(0)
+        self.clear_tck()
+        self.clear_tms()
+        time.sleep(0.010)
+        self.set_tms()
     
     def erase_minimal(self, memory):
         startaddress=min(s.startaddress for s in memory.segments)
@@ -195,7 +212,7 @@ class JLink(object):
     def _wait_ready(self):
         while 1:
             ready,_=self.read_mem_U32(READY,1)
-            if ready[0]: break       
+            if ready[0]: break
         
     def make_dump(self,startaddress,endaddress,name):
         x,y=self.read_mem(startaddress, endaddress-startaddress)
@@ -241,6 +258,9 @@ class JLink(object):
 
         self.go()
         #time.sleep(5)
+
+        self.pinreset()
+
         return
 
         

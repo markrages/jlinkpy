@@ -81,17 +81,16 @@ class Memory:
                 extSegAddr = 65536 * data
                 #print "4: Assign extLinAddr %x"%data
                 pass
+            elif type == 0x03:
+                data=int(l[9:9+length*2],16)
+                self.applicationStartAddress=data
+                pass
             elif type == 0x05:
                 data=int(l[9:9+4*2],16)
                 self.applicationStartAddress=data
                 #print "5: Startaddr %x"%data
                 pass
             elif type == 0x01: # EOF
-                pass
-            elif type in (0x03,):
-                message = l+" type: %x"%type
-                print message
-                #raise Exception(message)
                 pass
             else:
                 sys.stderr.write("Ignored unknown field (type 0x%02x) in ihex file.\n" % type)
